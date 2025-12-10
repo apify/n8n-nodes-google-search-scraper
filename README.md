@@ -1,262 +1,244 @@
-# n8n Nodes - Apify integration
+# n8n Nodes - Apify Actor Template
 
-This is an n8n community node that integrates [Apify](https://apify.com) with your n8n workflows, so you can run Apify Actors, extract structured data from websites, and automate complex web scraping tasks.
+This template converts Apify Actors into n8n community nodes. The generation script reads your Actor's input schema and creates the node package structure, which you can then customize and publish.
+Simply provide an Actor ID, and the script generates a complete n8n community node package using your Actor's input schema—ready to customize and publish.
 
-[Apify](https://apify.com) is a platform for developers to build, deploy, and publish web automation tools, while [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) tool for AI workflow automation that allows you to connect various services.
+[Apify](https://apify.com) is a platform for building, deploying, and publishing web automation tools called Actors, while [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform that connects various services and APIs.
 
-## Table of contents
+---
 
-- [Installation](#installation)
-- [Operations](#operations)
-- [Credentials](#credentials)
-- [Compatibility](#compatibility)
-- [Usage](#usage)
-- [Resources](#resources)
-- [Release](#releasing-a-new-version)
-- [Version History](#version-history)
-- [Troubleshooting](#troubleshooting)
+## Table of Contents
 
-## Installation
+- [Setup](#setup)
+  - [Prerequisites](#️-prerequisites)
+  - [1. Generate Your Node](#1-generate-your-node)
+  - [2. Customize Your Node](#2-customize-your-node)
+    - [Actor schema constants](#actor-schema-constants)
+    - [Node icon](#node-icon)
+    - [Subtitle](#subtitle)
+    - [Node description](#node-description)
+    - [AI tool result filtering](#ai-tool-result-filtering)
+    - [Additional customization](#additional-customization)
+    - [API utilities](#api-utilities)
+    - [Node metadata](#node-metadata)
+    - [README template](#readme-template)
+- [Development](#development)
+- [Getting help](#getting-help)
+
+## Setup
 
 ### ⚙️ Prerequisites
 
-- Node.js (recommended: v23.11.1)
+- Node.js v23.11.1 or higher
+- A valid Apify Actor ID from the [Apify Store](https://apify.com/store)
 
 ---
 
-### 1. Initialize n8n locally
+### 1. Generate Your Node
 
-You can just call the following commands and have the local development started. It also includes hot reloading.
+Install dependencies:
+	```bash
+	npm install
+	```
+	
+	Run the generation script:
+	```bash
+	npm run create-actor-app
+	```
+	
+When prompted, enter your Actor ID. Find this in your Actor's console URL, for example, if your Actor page is `https://console.apify.com/actors/aYG0l9s7dbB7j3gbS/input`, the Actor ID is `aYG0l9s7dbB7j3gbS`.
+	
+The script fetches your Actor's metadata and input schema, generates node files with proper naming, converts Actor input fields into n8n node parameters, and creates all necessary boilerplate code.
+Test the generated node:
+	```bash
+	npm run build
+	npm run dev
+	```
 
-```bash
-npm install
-npm run dev
+---
+
+### 2. Customize Your Node
+
+After generation, your node files will be located in:
+```
+nodes/Apify<YourActorName>/
 ```
 
-## Self-hosted n8n: Public webhook URL for triggers
+For example, if you converted the **Website Content Crawler** Actor, the folder will be:
+```
+nodes/ApifyWebsiteContentCrawler/
+```
 
-This configuration is required for our service's trigger functionality to work correctly.
+#### Customization
 
-By default, when running locally n8n generates webhook URLs using `localhost`, which external services cannot reach. To fix this:
+The generated code includes five sections labeled with `SNIPPET` comments. Search for `SNIPPET` in your IDE to locate them quickly.
 
-1. **Set your webhook URL**  
-In the same shell or Docker environment where n8n runs, export the `WEBHOOK_URL` to a publicly-accessible address. For example:
-  ```bash
-  export WEBHOOK_URL="https://your-tunnel.local"
-  ```
-2. **Restart n8n** 
-  ```bash
-  npm run dev
-  ```
+##### Actor schema constants
 
-## Operations
-
-![operations](./docs/actions.png)
-
-This node supports a wide range of Apify operations, organized by resource type:
-
-### Actors
-- **Run Actor**: Execute an Actor with optional input parameters
-  - **Default behavior**: Uses predefined input values
-  - **Custom input**: Provide JSON object to override any or all default parameters.
-  - Configurable timeout and memory limits
-  - Build version selection
-- **Scrape Single URL**: Quick scraping of a single URL
-- **Get Last Run**: Retrieve information about the most recent Actor run
-
-![actor run](./docs/run-actor.png)
-
-### Actor tasks
-- **Run Task**: Execute a predefined Actor task
-  - Supports custom input JSON
-  - Configurable timeout
-  - Task-specific settings
-
-### Actor runs
-- **Get User Runs List**: List all runs for a user
-  - Pagination support
-  - Sorting options
-  - Status filtering
-- **Get run**: Retrieve detailed information about a specific run
-
-### Datasets
-- **Get Items**: Fetch items from a dataset
-
-### Key-Value Stores
-- **Get Key-Value Store Record**: Retrieve a specific record by key
-
-### Triggers
-  Automatically start an n8n workflow whenever an Actor or task finishes execution
-  - Can be configured to trigger on success, failure, abort, timeout or any combination of these states
-  - Includes run metadata in the output
-  - Available triggers: 
-    - **Actor Run Finished**: Start a workflow when an Actor run completes
-    - **Task Run Finished**: Start a workflow when a task run completes
-
-![triggers](./docs/trigger.png)
-
-## Credentials
-
-The node supports two authentication methods:
-
-1. **API key authentication**
-   - Configure your Apify API key in the n8n credentials section under `apifyApi`
-
-2. **OAuth2 authentication** (available only in n8n cloud)
-   - Configure OAuth2 credentials in the n8n credentials section under `apifyOAuth2Api`
-
-![auth](./docs/auth.png)
-
-
-## Compatibility
-
-This node has been tested with n8n version 1.57.0.
-
-## Usage
-
-1. **Create an Actor**: Set up a new Actor on [Apify](https://apify.com).
-2. **Set up a workflow**: Create a new workflow in n8n.
-3. **Add the Apify node**: Insert the Apify node into your workflow.
-4. **Configure credentials**: Enter your Apify API key and Actor ID.
-5. **Select an operation**: Choose the desired operation for the node.
-6. **Execute the workflow**: Run the workflow to execute the Apify operation.
-
-![workflow](./docs/workflow.png)
-
-## Resources
-
-- [n8n Community Nodes Documentation](https://docs.n8n.io/integrations/community-nodes/)
-- [Apify API Documentation](https://docs.apify.com)
-
-# Releasing a New Version
-
-This project uses a GitHub Actions workflow to automate the release process, including publishing to npm. Here's how to trigger a new release.
-
-**Prerequisites (for all methods):**
-
-* Ensure your target branch on GitHub is up-to-date with all changes you want to include in the release.
-* Decide on the new version number, following semantic versioning (e.g., `vX.Y.Z`).
-* Prepare your release notes detailing the changes.
-* If you're using CLI to release, make sure you have the [GitHub CLI (`gh`)](https://cli.github.com/) installed and authenticated (`gh auth login`).
+Location: `nodes/Apify{YourActorName}/Apify{YourActorName}.node.ts`
+The script generates these constants from your Actor's metadata:
+	```typescript
+	export const ACTOR_ID = 'aYG0l9s7dbB7j3gbS'
+	export const CLASS_NAME = 'ApifyWebsiteContentCrawler'
+	export const DISPLAY_NAME = 'Apify Website Content Crawler'
+	export const DESCRIPTION = ''
+	```
+> **Tip:** Change `DISPLAY_NAME` or `DESCRIPTION` to adjust how your node appears in the n8n interface.
 
 ---
 
-## Method 1: Using the GitHub Web UI (Recommended for ease of use)
+##### Node icon
 
-1.  **Navigate to GitHub Releases:**
-    * Go to your repository’s "Releases" tab
-
-2.  **Draft a New Release:**
-    * Click the **“Draft a new release”** button.
-
-3.  **Create or Choose a Tag:**
-    * In the “Choose a tag” dropdown:
-        * **Type your new tag name** (e.g., `v1.2.3`).
-        * If the tag doesn't exist, GitHub will prompt you with an option like **“Create new tag: v1.2.3 on publish.”** Click this.
-        * Ensure the **target branch** selected for creating the new tag is correct. This tag will point to the latest commit on this target branch.
-
-4.  **Set Release Title and Notes:**
-    * Set the "Release title" (e.g., `vX.Y.Z` or a more descriptive title).
-    * For the release notes in the description field, you have a few options:
-        * **Write your prepared release notes.**
-        * **Click the "Generate release notes" button:** GitHub will attempt to automatically create release notes based on merged pull requests since the last release. You can then review and edit these auto-generated notes.
-
-5.  **Publish the Release:**
-    * Click the **“Publish release”** button.
-
-    *Upon publishing, GitHub creates the tag from your specified branch and then creates the release. This "published" release event triggers the automated workflow.*
+Location: `nodes/Apify{YourActorName}/Apify{YourActorName}.node.ts`
+The default configuration uses the Apify logo:
+	```typescript
+	icon: {
+	  light: 'file:apify.svg',
+	  dark: 'file:apifyDark.svg'
+	}
+	```
+Replace the SVG files in the node directory with your own branding.
 
 ---
 
-## Method 2: Fully CLI-Driven Release
+##### Subtitle
 
-This method uses the GitHub CLI (`gh`) for all steps, including tag creation.
-
-1.  **Ensure your local target branch is synced and changes are pushed:**
-    ```bash
-    git checkout master
-    git pull origin master
-    ```
-
-2.  **Create the Release (which also creates and pushes the tag):**
-    Replace `vX.Y.Z` with your desired tag/version. The command will create this tag from the latest commit of your specified `--target` branch (defaults to repository's default branch, if `--target` is omitted and the branch is up to date).
-
-    ```bash
-    gh release create vX.Y.Z \
-        --target master \
-        --title "vX.Y.Z" \
-        --notes "Your detailed release notes here.
-        - Feature X
-        - Bugfix Y"
-
-    # Or, to use notes from a file:
-    gh release create vX.Y.Z \
-        --target master \
-        --title "vX.Y.Z" \
-        --notes-file ./RELEASE_NOTES.md
-
-    # Or, to generate notes from pull requests (commits must follow conventional commit format for best results):
-    gh release create vX.Y.Z \ 
-        --target master \
-        --title "vX.Y.Z" 
-        --generate-notes
-    ```
-    
-    * `vX.Y.Z`: The tag and release name.
-    * `--target <branch>`: Specifies which branch the tag should be created from (e.g., `master`). If the tag `vX.Y.Z` doesn't exist, `gh` will create it based on the HEAD of this target branch and push it.
-    * `--title "<title>"`: The title for your release.
-    * `--notes "<notes>"` or `--notes-file <filepath>` or `--generate-notes`: Your release notes.
-
-    *This command will create the tag, push it to GitHub, and then publish the release. This "published" release event triggers the automated workflow.*
+Location: `nodes/Apify{YourActorName}/Apify{YourActorName}.node.ts`
+The subtitle appears beneath your node in n8n workflows:
+	```typescript
+	subtitle: 'Run Scraper',
+	```
+![Actor Subtitle](./docs/actor-subtitle.png)
 
 ---
 
-## Post-Release: Automated Workflow & Verification (Common to all methods)
+##### Node description
 
-Regardless of how you create and publish the GitHub Release:
+Location: `nodes/Apify{YourActorName}/Apify{YourActorName}.node.ts`
+This description appears in n8n's node browser:
+	```typescript
+	description: DESCRIPTION,
+	```
+![Apify Node Description](./docs/node-description.png)
 
-1.  **Automated Workflow Execution:**
-    * The "Release & Publish" GitHub Actions workflow will automatically trigger.
-    * It will perform:
-        1.  Code checkout.
-        2.  Version extraction (`X.Y.Z`) from the release tag.
-        3.  Build and test processes.
-        4.  Update `package.json` and `package-lock.json` to version `X.Y.Z`.
-        5.  Commit these version changes back to the branch the release was targeted from with a message like `chore(release): set version to X.Y.Z [skip ci]`.
-        6.  Publish the package `@apify/n8n-nodes-apify-actor-template@X.Y.Z` to npm.
+---
 
-2.  **Verify the Package on npm:**
-    After the workflow successfully completes (check the "Actions" tab in your GitHub repository):
-    * Verify the new version on npm:
-        ```bash
-        npm view @apify/n8n-nodes-apify-actor-template version
-        ```
-        This should print `X.Y.Z`.
+### AI tool result filtering
 
-## Version history
+Location: `nodes/Apify{YourActorName}/helpers/genericFunctions.ts`
+When your node runs in AI agent workflows, reduce token usage by filtering the returned data:
+	```typescript
+	if (isUsedAsAiTool(this.getNode().type)) {
+	  results = results.map((item: any) => ({ markdown: item.markdown }));
+	}
+	```
+AI agents perform better with clean, focused data that takes up less context.
+---
+#### Additional customization
 
-Track changes and updates to the node here.
+The `Apify{YourActorName}.node.json` file controls where your node appears in n8n:
+	```json
+	{
+	  "categories": ["Data & Storage", "Marketing & Content"],
+	  "alias": ["crawler", "scraper", "website", "content"]
+	}
+	```
+Adjust `categories` to match your Actor's purpose and add relevant search keywords to `alias`.
+The template includes pre-configured authentication in the `credentials/` directory. Users running n8n locally provide their Apify API token. Users on n8n cloud can authenticate via OAuth2.
 
-## Troubleshooting
+---
 
-### Common issues
+##### API utilities
 
-1. **Authentication errors**
-   - Verify your API key is correct
+File: `helpers/genericFunctions.ts`
+This file provides helper functions for authenticated Apify API requests. The `apiRequest()` function makes authenticated HTTP requests to the Apify API. The `isUsedAsAiTool()` function detects if the node runs in an AI agent workflow. The `pollRunStatus()` function polls an Actor run until completion. The `getResults()` function fetches dataset items with optional AI tool filtering.
+The template adds these headers automatically:
+	```typescript
+	'x-apify-integration-platform': 'n8n'
+	'x-apify-integration-app-id': 'website-content-crawler-app'
+	'x-apify-integration-ai-tool': 'true' // when used with AI
+	```
+Add custom request headers, implement retry logic, or filter results for AI tools in this file.
+---
 
-2. **Resource Not Found**
-   - Verify the resource ID format
-   - Check if the resource exists in your Apify account
-   - Ensure you have access to the resource
+##### Node metadata
 
-3. **Operation failures**
-   - Check the input parameters
-   - Verify resource limits (memory, timeout)
-   - Review Apify Console for detailed error messages
+File: `Apify{YourActorName}.node.json`
+This file tells n8n where to categorize your node and what keywords to search for:
+	```json
+	{
+	  "categories": ["Data & Storage", "Marketing & Content"],
+	  "alias": ["apify", "crawler", "scraper", "website", "content"],
+	  "resources": {
+	    "credentialDocumentation": [
+	      { "url": "https://docs.apify.com/platform/integrations/api#api-token" }
+	    ],
+	    "primaryDocumentation": [
+	      { "url": "https://apify.com/apify/website-content-crawler" }
+	    ]
+	  }
+	}
+	```
+Adjust categories, add search keywords to `alias`, and update documentation links.
 
-### Getting help
+---
 
-If you encounter issues:
-1. Check the [Apify API documentation](https://docs.apify.com)
-2. Review the [n8n Community Nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
-3. Open an issue in the [GitHub repository](https://github.com/apify/n8n-nodes-apify-actor-template)
+##### README template
+
+This repository contains two README files. This file (`README.md`) provides instructions for developers using this template to generate n8n nodes from Apify Actors. The `README_TEMPLATE.md` file provides template documentation for the generated node package that you publish to npm.
+After running the generation script, uses `README_TEMPLATE.md` as the README for your generated node package.
+
+---
+
+##### API utilities
+
+File: `helpers/genericFunctions.ts`
+This file provides helper functions for authenticated Apify API requests. The `apiRequest()` function makes authenticated HTTP requests to the Apify API. The `isUsedAsAiTool()` function detects if the node runs in an AI agent workflow. The `pollRunStatus()` function polls an Actor run until completion. The `getResults()` function fetches dataset items with optional AI tool filtering.
+The template adds these headers automatically:
+	```typescript
+	'x-apify-integration-platform': 'n8n'
+	'x-apify-integration-app-id': 'website-content-crawler-app'
+	'x-apify-integration-ai-tool': 'true' // when used with AI
+	```
+Add custom request headers, implement retry logic, or filter results for AI tools in this file.
+---
+##### Node metadata
+
+File: `Apify{YourActorName}.node.json`
+This file tells n8n where to categorize your node and what keywords to search for:
+	```json
+	{
+	  "categories": ["Data & Storage", "Marketing & Content"],
+	  "alias": ["apify", "crawler", "scraper", "website", "content"],
+	  "resources": {
+	    "credentialDocumentation": [
+	      { "url": "https://docs.apify.com/platform/integrations/api#api-token" }
+	    ],
+	    "primaryDocumentation": [
+	      { "url": "https://apify.com/apify/website-content-crawler" }
+	    ]
+	  }
+	}
+	```
+Adjust categories, add search keywords to `alias`, and update documentation links.
+---
+##### README template
+
+This repository contains two README files. This file (`README.md`) provides instructions for developers using this template to generate n8n nodes from Apify Actors. The `README_TEMPLATE.md` file provides template documentation for the generated node package that you publish to npm.
+After running the generation script, uses `README_TEMPLATE.md` as the README for your generated node package.
+---
+
+## Development
+
+Start n8n with your custom node:
+	```bash
+	npm run dev
+	```
+This launches n8n at `http://localhost:5678` with hot reloading enabled. Changes to your node files automatically refresh.
+
+## Getting help
+
+- [Apify API documentation](https://docs.apify.com)
+- [n8n Community Nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
+- [n8n community](https://community.n8n.io/)
+- Template issues - Open an issue in the [GitHub repository](https://github.com/apify/n8n-nodes-apify-instagram-scraper)

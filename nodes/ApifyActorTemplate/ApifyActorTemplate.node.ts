@@ -6,9 +6,9 @@ import {
 	NodeConnectionType,
 } from 'n8n-workflow';
 import { properties } from './ApifyActorTemplate.properties';
-import { methods } from './ApifyActorTemplate.methods';
-import { actorsRouter } from './resources/actors/router';
+import { runActor } from './helpers/executeActor';
 
+// SNIPPET 1: Make sure the constants are correct
 export const ACTOR_ID = '$$ACTOR_ID' as string;
 
 export const PACKAGE_NAME = '$$PACKAGE_NAME' as string;
@@ -25,12 +25,21 @@ export class ApifyActorTemplate implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: DISPLAY_NAME,
 		name: ClassNameCamel,
-		icon: 'file:apify.svg',
+
+		// SNIPPET 2: Adjust the icon of your app
+		icon: {
+			light: 'file:apify.svg',
+			dark: 'file:apifyDark.svg'
+		},
 		group: ['transform'],
 		// Mismatched version and defaultVersion as a minor hack to hide "Custom API Call" resource
 		version: [1],
 		defaultVersion: 1,
-		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+
+		// SNIPPET 3: Adjust the subtitle for your Actor app.
+		subtitle: 'Run Scraper',
+		
+		// SNIPPET 4: Make sure the description is not too large, 1 sentence should be ideal.
 		description: DESCRIPTION,
 		defaults: {
 			name: DISPLAY_NAME,
@@ -64,15 +73,13 @@ export class ApifyActorTemplate implements INodeType {
 		properties,
 	};
 
-	methods = methods;
-
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				const data = await actorsRouter.call(this, i);
+				const data = await runActor.call(this, i);
 
 				const addPairedItem = (item: INodeExecutionData) => ({
 					...item,

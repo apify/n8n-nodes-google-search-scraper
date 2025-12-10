@@ -129,6 +129,13 @@ export async function getResults(this: IExecuteFunctions, datasetId: string): Pr
 		uri: `/v2/datasets/${datasetId}/items`,
 	});
 
+	// SNIPPET 5: AI Agent tool usage optimizations
+	// It might be beneficial to remove fields like run info etc. This helps with the context limits of LLM's
+	// EXAMPLE BELOW: Leaves only relevant markdown result reducing total context usage
+	if (isUsedAsAiTool(this.getNode().type)) {
+		// results = results.map((item: any) => ({ markdown: item.markdown }));
+	}
+
 	return this.helpers.returnJsonArray(results);
 }
 
