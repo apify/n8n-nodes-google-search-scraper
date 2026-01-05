@@ -5,29 +5,29 @@ import {
 	INodeTypeDescription,
 	NodeConnectionType,
 } from 'n8n-workflow';
-import { properties } from './ApifyActorTemplate.properties';
+import { properties } from './ApifyGoogleSearchScraper.properties';
 import { runActor } from './helpers/executeActor';
 
 // SNIPPET 1: Make sure the constants are correct
-export const ACTOR_ID = '$$ACTOR_ID' as string;
+export const ACTOR_ID = 'nFJndFXA5zjCTuudP' as string;
 
-export const PACKAGE_NAME = '$$PACKAGE_NAME' as string;
-export const CLASS_NAME = '$$CLASS_NAME' as string;
+export const PACKAGE_NAME = 'n8n-nodes-google-search-scraper' as string;
+export const CLASS_NAME = 'ApifyGoogleSearchScraper' as string;
 export const ClassNameCamel = CLASS_NAME.charAt(0).toLowerCase() + CLASS_NAME.slice(1); // make the first letter lowercase for name fields
 
-export const X_PLATFORM_HEADER_ID = '$$X_PLATFORM_HEADER_ID' as string;
-export const X_PLATFORM_APP_HEADER_ID = '$$X_PLATFORM_APP_HEADER_ID' as string;
+export const X_PLATFORM_HEADER_ID = 'n8n' as string;
+export const X_PLATFORM_APP_HEADER_ID = 'google-search-scraper-app' as string;
 
-export const DISPLAY_NAME = '$$DISPLAY_NAME' as string;
-export const DESCRIPTION = '$$DESCRIPTION' as string;
+export const DISPLAY_NAME = 'Apify Google Search Results Scraper' as string;
+export const DESCRIPTION = 'Scrape Google Search Engine Results Pages (SERPs). Select the country or language and extract organic and paid results, AI Mode, AI overviews, ads, queries, People Also Ask, prices, reviews, like a Google SERP API. Export data, run the scraper via API, schedule runs, or integrate with other tools.' as string;
 
-export class ApifyActorTemplate implements INodeType {
+export class ApifyGoogleSearchScraper implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: DISPLAY_NAME,
 		name: ClassNameCamel,
 
 		// SNIPPET 2: Adjust the icon of your app
-		icon: 'file:logo.svg',
+		icon: 'file:logo.png',
 		group: ['transform'],
 		// Mismatched version and defaultVersion as a minor hack to hide "Custom API Call" resource
 		version: [1],
