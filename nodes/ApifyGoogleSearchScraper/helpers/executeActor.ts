@@ -1,7 +1,7 @@
 import { IExecuteFunctions, INodeExecutionData, NodeApiError } from 'n8n-workflow';
 import { apiRequest, getResults, isUsedAsAiTool, pollRunStatus } from './genericFunctions';
-import { ACTOR_ID } from '../ApifyActorTemplate.node';
-import { buildActorInput } from '../ApifyActorTemplate.properties';
+import { ACTOR_ID } from '../ApifyGoogleSearchScraper.node';
+import { buildActorInput } from '../ApifyGoogleSearchScraper.properties';
 
 export async function getDefaultBuild(this: IExecuteFunctions, actorId: string) {
 	const defaultBuildResp = await apiRequest.call(this, {
@@ -72,4 +72,3 @@ export async function runActor(this: IExecuteFunctions, i: number): Promise<INod
 
 	return { json: { ...lastRunData, ...resultData } };
 }
-

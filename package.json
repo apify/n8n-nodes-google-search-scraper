@@ -1,5 +1,5 @@
 {
-	"name": "n8n-nodes-apify-actor-template",
+	"name": "n8n-nodes-google-search-scraper",
 	"version": "0.0.0",
 	"description": "PACKAGE_DESCRIPTION",
 	"keywords": [
@@ -36,7 +36,7 @@
 			"dist/credentials/ApifyOAuth2Api.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/ApifyActorTemplate/ApifyActorTemplate.node.js"
+			"dist/nodes/ApifyGoogleSearchScraper/ApifyGoogleSearchScraper.node.js"
 		]
 	},
 	"peerDependencies": {
