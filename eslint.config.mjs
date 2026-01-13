@@ -19,4 +19,12 @@ export default [
 			'@typescript-eslint/no-explicit-any': 'off',
 		},
 	},
+
+		// disable icon validation rules
+	{
+		rules: {
+			'@n8n/community-nodes/icon-validation': 'off',
+			'n8n-nodes-base/node-class-description-icon-not-svg': 'off',
+		},
+	},
 ];
