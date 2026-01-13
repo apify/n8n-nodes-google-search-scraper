@@ -24,18 +24,22 @@ export function buildActorInput(
 			}
 			return {};
 		})()),
-		// ⏩ Add-on: Google AI Mode (aiMode)
-		aiMode: context.getNodeParameter('aiMode', itemIndex),
 		// ⏩ Add-on: Perplexity AI search (perplexitySearch)
 		...((() => {
-			const perplexitySearch = context.getNodeParameter('perplexitySearch', itemIndex) as any;
-			if (perplexitySearch && typeof perplexitySearch === 'object' && 'options' in perplexitySearch && perplexitySearch.options) {
-				const options = { ...perplexitySearch.options };
-				// Remove empty/unset fields
+			const aiGenerativeSearch = context.getNodeParameter('perplexitySearch', itemIndex) as any;
+			if (aiGenerativeSearch && typeof aiGenerativeSearch === 'object' && 'options' in aiGenerativeSearch && aiGenerativeSearch.options) {
+            const { aiMode, perplexitySearch } = aiGenerativeSearch.options;
+
+            const options: any = { ...perplexitySearch.options };
+            // Remove empty/unset fields
 				if (options.searchRecency === '') {
 					delete options.searchRecency;
 				}
-				return { perplexitySearch: options };
+
+				return { 
+               aiMode,
+               perplexitySearch: options 
+            };
 			}
 			return {};
 		})()),
@@ -159,7 +163,7 @@ export const actorProperties: INodeProperties[] = [
 		displayName: 'Number of results',
 		name: 'numberOfResults',
 		type: 'fixedCollection',
-    description: 'Google usually returns about 200 results per search. By default it displays about 20-30 pages with 10 results per page, but you can switch it to display 100 results - and then Google will only show 2 to 3 pages. This is a more efficient option for scraping as you get more results with one request.',
+      description: 'Google usually returns about 200 results per search. By default it displays about 20-30 pages with 10 results per page, but you can switch it to display 100 results - and then Google will only show 2 to 3 pages. This is a more efficient option for scraping as you get more results with one request.',
 		default: {},
 		typeOptions: {
 			multipleValues: false,
@@ -194,31 +198,10 @@ export const actorProperties: INodeProperties[] = [
 		],
 	},
    {
-      displayName: '⏩ Add-on: Google AI Mode ($)',
-      name: 'aiMode',
-      description: "Enable scraping of Google's AI Mode to perform Answer Engine Optimization (AEO), GEO targeting, track brand visibility, and analyze competitors.",
-      default: 'aiModeOff',
-      type: 'options',
-      options: [
-         {
-         name: 'AI Mode off',
-         value: 'aiModeOff'
-         },
-         {
-         name: 'AI Mode + Search Results',
-         value: 'aiModeWithSearchResults'
-         },
-         {
-         name: 'AI Mode only',
-         value: 'aiModeOnly'
-         }
-      ]
-   },
-  	{
-		displayName: '⏩ Add-on: Perplexity AI search ($)',
-		name: 'perplexitySearch',
+		displayName: '🤖 Add-on: AI & Generative search',
+		name: 'aiGenerativeSearch',
 		type: 'fixedCollection',
-      description: 'Enable Perplexity to retrieve AI-generated answers and citations using the Sonar model. This feature is designed for cross-platform analysis, allowing you to directly compare Google AI Mode results against Perplexity’s perspective to identify narrative differences and coverage gaps. Note: An additional fee applies per result when this feature is active. Please refer to the Pricing tab for your specific rate.',
+      description: "In this section, you can enable <b>Generative search</b> capabilities to retrieve comprehensive AI summaries alongside organic results. This is essential for <b>Answer Engine Optimization (AEO)</b>, <b>Generative Engine Optimization (GEO)</b>, brand monitoring, and cross-platform competitive analysis.<br><br><b>Available features:</b><ul><li><b>Google AI mode:</b> Scrapes the AI results from Google Search to track your visibility on the world's largest search engine.</li><li><b>Perplexity AI search:</b> Fetches a separate AI answer using the Sonar model. Use this to <b>compare Google vs. Perplexity</b> perspectives and identify narrative differences or coverage gaps.</li></ul><hr><b>Pricing notice:</b><br>An additional fee applies per <b>successful result</b> when these features are active. Significant discounts are available on higher-tier plans. Please see the <b>Pricing tab</b> for your exact rate based on your subscription.",
 		default: {},
 		typeOptions: {
 			multipleValues: false,
@@ -228,57 +211,96 @@ export const actorProperties: INodeProperties[] = [
 				displayName: 'Options',
 				name: 'options',
 				values: [
-					{
-						displayName: 'Enable Perplexity AI',
-						name: 'enablePerplexity',
-            description: 'Fetches an AI answer from Perplexity for every query to compare against Google.',
-						type: 'boolean',
-						default: false,
-					},
-					{
-						displayName: 'Search Recency',
-            description: 'Filter search results based on their recency.',
-						name: 'searchRecency',
-						type: 'options',
-						default: '',
-						// eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
-						options: [
-              {
-                name: 'None',
-                value: '',
-              },
-							{
-								name: 'Day',
-								value: 'day',
-							},
-							{
-								name: 'Week',
-								value: 'week',
-							},
-              {
-                name: 'Month',
-                value: 'month',
-              },
-              {
-                name: 'Year',
-                value: 'year',
-              }
-						],
-					},
-					{
-						displayName: 'Include images in Perplexity AI answers',
-            description: 'If enabled, Perplexity will search for and return relevant images as part of the AI response.',
-						name: 'returnImages',
-						type: 'boolean',
-						default: false,
-					},
-					{
-						displayName: 'Include related questions in Perplexity AI answers',
-            description: 'If enabled, Perplexity will generate and return a list of follow-up questions related to your search query.',
-						name: 'returnRelatedQuestions',
-						type: 'boolean',
-						default: false,
-					},
+               {
+                  displayName: '⏩ Add-on: Google AI Mode ($)',
+                  name: 'aiMode',
+                  description: "Enable scraping of Google's AI Mode to perform Answer Engine Optimization (AEO), GEO targeting, track brand visibility, and analyze competitors.",
+                  default: 'aiModeOff',
+                  type: 'options',
+                  options: [
+                     {
+                     name: 'AI Mode off',
+                     value: 'aiModeOff'
+                     },
+                     {
+                     name: 'AI Mode + Search Results',
+                     value: 'aiModeWithSearchResults'
+                     },
+                     {
+                     name: 'AI Mode only',
+                     value: 'aiModeOnly'
+                     }
+                  ]
+               },
+               {
+                  displayName: '⏩ Add-on: Perplexity AI search ($)',
+                  name: 'perplexitySearch',
+                  type: 'fixedCollection',
+                  description: 'Enable Perplexity to retrieve AI-generated answers and citations using the Sonar model. This feature is designed for cross-platform analysis, allowing you to directly compare Google AI Mode results against Perplexity’s perspective to identify narrative differences and coverage gaps. Note: An additional fee applies per result when this feature is active. Please refer to the Pricing tab for your specific rate.',
+                  default: {},
+                  typeOptions: {
+                     multipleValues: false,
+                  },
+                  options: [
+                     {
+                        displayName: 'Options',
+                        name: 'options',
+                        values: [
+                           {
+                              displayName: 'Enable Perplexity AI',
+                              name: 'enablePerplexity',
+                              description: 'Fetches an AI answer from Perplexity for every query to compare against Google.',
+                              type: 'boolean',
+                              default: false,
+                           },
+                           {
+                              displayName: 'Search Recency',
+                              description: 'Filter search results based on their recency.',
+                              name: 'searchRecency',
+                              type: 'options',
+                              default: '',
+                              // eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
+                              options: [
+                                 {
+                                    name: 'None',
+                                    value: '',
+                                 },
+                                 {
+                                    name: 'Day',
+                                    value: 'day',
+                                 },
+                                 {
+                                    name: 'Week',
+                                    value: 'week',
+                                 },
+                                 {
+                                    name: 'Month',
+                                    value: 'month',
+                                 },
+                                 {
+                                    name: 'Year',
+                                    value: 'year',
+                                 }
+                              ],
+                           },
+                           {
+                              displayName: 'Include images in Perplexity AI answers',
+                              description: 'If enabled, Perplexity will search for and return relevant images as part of the AI response.',
+                              name: 'returnImages',
+                              type: 'boolean',
+                              default: false,
+                           },
+                           {
+                              displayName: 'Include related questions in Perplexity AI answers',
+                              description: 'If enabled, Perplexity will generate and return a list of follow-up questions related to your search query.',
+                              name: 'returnRelatedQuestions',
+                              type: 'boolean',
+                              default: false,
+                           },
+                        ],
+                     },
+                  ],
+               },
 				],
 			},
 		],
@@ -390,12 +412,12 @@ export const actorProperties: INodeProperties[] = [
 				name: 'options',
 				values: [
 					{
-            displayName: "⏩ Add-on: Enable paid results (ads) extraction ($)",
-            name: "focusOnPaidAds",
-            description: "Enable extraction of paid results (Google Ads). This feature improves ad detection accuracy by using an ad-specialized proxy to perform up to 3 retries for each search query. Best used for queries likely to show ads. An extra cost per search page applies when enabled, regardless of ads found. Pricing depends on your Apify subscription plan.",
-            default: false,
-            type: "boolean"
-          },
+                  displayName: "⏩ Add-on: Enable paid results (ads) extraction ($)",
+                  name: "focusOnPaidAds",
+                  description: "Enable extraction of paid results (Google Ads). This feature improves ad detection accuracy by using an ad-specialized proxy to perform up to 3 retries for each search query. Best used for queries likely to show ads. An extra cost per search page applies when enabled, regardless of ads found. Pricing depends on your Apify subscription plan.",
+                  default: false,
+                  type: "boolean"
+               },
 				],
 			},
 		],
