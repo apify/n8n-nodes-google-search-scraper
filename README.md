@@ -55,7 +55,7 @@ nvm use
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/apify/n8n-nodes-apify.git
+git clone https://github.com/apify/n8n-nodes-google-search-scraper.git
 cd n8n-nodes-google-search-scraper
 npm install --legacy-peer-deps
 ```
