@@ -1,16 +1,24 @@
 {
 	"name": "n8n-nodes-google-search-scraper",
 	"version": "0.0.0",
-	"description": "PACKAGE_DESCRIPTION",
+	"description": "n8n node for Google Search Scraper",
 	"keywords": [
 		"n8n-community-node-package",
 		"n8n-nodes",
-		"n8n"
+		"n8n",
+		"apify",
+		"apify-nodes",
+		"google-search-scraper"
 	],
 	"license": "MIT",
+	"homepage": "https://github.com/apify/n8n-nodes-google-search-scraper",
 	"author": {
-		"name": "AUTHOR_NAME",
-		"email": "AUTHOR_EMAIL"
+		"name": "Apify Team",
+		"email": "integrations@apify.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/apify/n8n-nodes-google-search-scraper.git"
 	},
 	"engines": {
 		"node": ">=18.10"
