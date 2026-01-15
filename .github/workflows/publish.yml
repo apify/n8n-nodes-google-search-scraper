@@ -4,11 +4,13 @@ on:
   release:
     types: [published]
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
   build_and_release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout code
@@ -17,20 +19,25 @@ jobs:
           token: ${{ secrets.APIFY_SERVICE_ACCOUNT_GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Set up Node.js & cache npm
-        uses: actions/setup-node@v4
+      - name: Setup Node.js and cache npm
+        uses: actions/setup-node@v6
         with:
           node-version: '22.x'
-          cache: npm
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      # We need 11.5.1 or higher due to https://docs.npmjs.com/trusted-publishers#configuring-trusted-publishing
+      - name: Ensure npm >= 11.5.1
+        run: npm install -g "npm@^11.5.1"
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Build project
         run: npm run build
 
       - name: Run tests
-        run: npm run test
+        run: npm test
 
       - name: Configure Git
         run: |
@@ -64,12 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.APIFY_SERVICE_ACCOUNT_GITHUB_TOKEN }}
 
-      - name: Set up npm for publishing
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.APIFY_SERVICE_ACCOUNT_NPM_TOKEN }}" > .npmrc
-
       - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.APIFY_SERVICE_ACCOUNT_NPM_TOKEN }}
         run: |
           if npm view @apify/n8n-nodes-google-search-scraper@${{ env.VERSION }} version > /dev/null 2>&1; then
             echo "Version ${{ env.VERSION }} of @apify/n8n-nodes-google-search-scraper is already published to npm. Skipping publish step."
