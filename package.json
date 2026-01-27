@@ -31,7 +31,7 @@
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
 		"merge:api": "npx openapi-merge-cli --config ./openapi.config.json",
-		"test": "WEBHOOK_URL=https://localhost:5678 jest --config jest.config.js",
+		"test": "WEBHOOK_URL=https://localhost:5678 jest --config jest.config.js --passWithNoTests",
 		"create-actor-app": "npx tsx scripts/cli.ts"
 	},
 	"files": [
