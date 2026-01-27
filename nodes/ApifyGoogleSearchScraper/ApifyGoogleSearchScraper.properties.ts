@@ -26,7 +26,7 @@ export function buildActorInput(
 		})()),
 		// ⏩ Add-on: Perplexity AI search (perplexitySearch)
 		...((() => {
-			const aiGenerativeSearch = context.getNodeParameter('perplexitySearch', itemIndex) as any;
+			const aiGenerativeSearch = context.getNodeParameter('aiGenerativeSearch', itemIndex) as any;
 			if (aiGenerativeSearch && typeof aiGenerativeSearch === 'object' && 'options' in aiGenerativeSearch && aiGenerativeSearch.options) {
             const { aiMode, perplexitySearch } = aiGenerativeSearch.options;
 
