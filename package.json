@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-google-search-scraper",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "n8n node for Google Search Scraper",
 	"keywords": [
 		"n8n-community-node-package",
